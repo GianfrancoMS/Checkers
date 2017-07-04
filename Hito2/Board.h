@@ -51,7 +51,9 @@ public:
 	static const int RED = 2;
 
 	bool isInLimits(Draught draught, Move move);
+
 	MoveStatus move(Player &player, Draught&draught, Move move);
+	
 	void printBoard();
 
 	vector<Draught> possibleMoves(PlayerColor color);

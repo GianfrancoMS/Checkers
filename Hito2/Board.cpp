@@ -83,7 +83,18 @@ void Board::printBoard(){
 
 vector<Draught> Board::possibleMoves(PlayerColor color)
 {
-	return vector<Draught>();
+	vector<Draught>possibleMoves;
+	if (color == PlayerColor::PLAYER_WHITE) {
+		for (auto draught : whiteDraughts) {
+			
+		}
+	}
+	else {
+		for (auto draught : redDraughts) {
+
+		}
+	}
+
 }
 
 bool Board::isSameColor(int x, int y, Draught draught)

@@ -101,10 +101,8 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 	switch (move) {
 		case Move::DIAGONAL_TOP_LEFT: {
 			if (isInLimits(draught, move)) {
-				int x = draughtX;
-				int y = draughtY;
-				x -= 1;
-				y -= 1;
+				int x = draughtX - 1;
+				int y = draughtY - 1;
 				if (board[x][y] == EMPTY ) {
 					board[draught.point.x][draught.point.y] = EMPTY;
 					player.updatePosition(draught, x, y);
@@ -142,10 +140,8 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 		}
 		case Move::DIAGONAL_TOP_RIGHT: {
 			if (isInLimits(draught, move)) {
-				int x = draught.point.x;
-				int y = draught.point.y;
-				x -= 1;
-				y += 1;
+				int x = draughtX - 1;
+				int y = draughtY + 1;
 				if (board[x][y] == EMPTY) {
 					board[draught.point.x][draught.point.y] = EMPTY;
 					player.updatePosition(draught, x, y);
@@ -185,10 +181,8 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 
 		case Move::DIAGONAL_DOWN_LEFT: {
 			if (isInLimits(draught, move)) {
-				int x = draught.point.x;
-				int y = draught.point.y;
-				x += 1;
-				y -= 1;
+				int x = draughtX + 1;
+				int y = draughtY - 1;
 				if (board[x][y] == EMPTY) {
 					board[draught.point.x][draught.point.y] = EMPTY;
 					player.updatePosition(draught, x, y);
@@ -227,10 +221,8 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 
 		case Move::DIAGONAL_DOWN_RIGHT: {
 			if (isInLimits(draught, move)) {
-				int x = draught.point.x;
-				int y = draught.point.y;
-				x += 1;
-				y += 1;
+				int x = draughtX + 1;
+				int y = draughtY + 1;
 				if (board[x][y] == EMPTY) {
 					board[draught.point.x][draught.point.y] = EMPTY;
 					player.updatePosition(draught, x, y);

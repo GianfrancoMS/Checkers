@@ -54,6 +54,8 @@ public:
 	MoveStatus move(Player &player, Draught&draught, Move move);
 	void printBoard();
 
+	vector<Draught> possibleMoves(PlayerColor color);
+
 	set<Draught> whiteDraughts;
 	set<Draught> redDraughts;
 

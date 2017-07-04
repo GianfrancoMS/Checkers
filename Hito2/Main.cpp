@@ -4,24 +4,24 @@
 
 int main() {
 	Board board = Board();
-	Player playerWHITE = Player(PlayerColor::PLAYER_WHITE, board);
-	Player playerRED = Player(PlayerColor::PLAYER_RED, board);
-	
+	Player playerWHITE = Player(PlayerColor::PLAYER_WHITE);
+	Player playerRED = Player(PlayerColor::PLAYER_RED);
+
 	/*board.printBoard();*/
-	cout << "Posiciones de las Fichas Blancas:  "<<endl;
-	for (auto draught : playerWHITE.draughts)
-		cout << draught.point.x << " " << draught.point.y << endl;
-	cout << "Posiciones de las FIchas Rojas:  " << endl;
-	for (auto draught : playerRED.draughts)
-		cout << draught.point.x << " " << draught.point.y << endl;
+	//cout << "Posiciones de las Fichas Blancas:  "<<endl;
+	//for (auto draught : playerWHITE.draughts)
+	//	cout << draught.point.x << " " << draught.point.y << endl;
+	//cout << "Posiciones de las FIchas Rojas:  " << endl;
+	//for (auto draught : playerRED.draughts)
+	//	cout << draught.point.x << " " << draught.point.y << endl;
 
 	Draught obj;
 	int x, y;
 	int aux;
 	Move mover;
-	obj = playerWHITE.getDraught(2, 6);
+	obj = board.getDraught(2, 6, playerWHITE.color);
 	board.move(playerWHITE, obj, Move::DIAGONAL_DOWN_LEFT);
-	obj = playerWHITE.getDraught(3, 5);
+	obj = board.getDraught(3, 5, playerWHITE.color);
 	board.move(playerWHITE, obj, Move::DIAGONAL_DOWN_RIGHT);
 	board.printBoard();
 	while (true)
@@ -31,20 +31,19 @@ int main() {
 			mover = Move::DIAGONAL_TOP_LEFT;
 		else
 			mover = Move::DIAGONAL_TOP_RIGHT;
-		obj = playerRED.getDraught(x, y);
+		obj = board.getDraught(x, y, playerRED.color);
 		if (board.move(playerRED, obj, mover) != MoveStatus::MOVE_IMPOSSIBLE)
 		{
 			board.printBoard();
-			cout << "Posiciones de las Fichas Blancas:  " << endl;
-			for (auto draught : playerWHITE.draughts)
+			for (auto draught : board.whiteDraughts)
 				cout << draught.point.x << " " << draught.point.y << endl;
 		}
 		else
 		{
 			cout << "jugada incorrecta" << endl;
-		}		
-	}	
-		
+		}
+	}
+
 	cin.get();
-	return 0;	
+	return 0;
 }

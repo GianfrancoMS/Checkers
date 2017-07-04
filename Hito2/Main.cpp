@@ -35,6 +35,9 @@ int main() {
 		if (board.move(playerRED, obj, mover) != MoveStatus::MOVE_IMPOSSIBLE)
 		{
 			board.printBoard();
+			cout << "Posiciones de las Fichas Blancas:  " << endl;
+			for (auto draught : playerWHITE.draughts)
+				cout << draught.point.x << " " << draught.point.y << endl;
 		}
 		else
 		{

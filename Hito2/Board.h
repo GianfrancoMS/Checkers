@@ -25,7 +25,6 @@ struct Draught
 	Point point;
 	DraughtType draughtType;
 	PlayerColor playerColor;
-	bool destroyed = false;
 
 	bool operator == (const Draught& draught) const {
 		return this->point == draught.point;
@@ -59,14 +58,12 @@ public:
 
 private:
 
-	static const char PIECE = '@';
+	static const char NORMAL_PIECE = '@';
+	static const char QUEEN_PIECE = '#';
 
-	void initializeBoard();
 	void updateBoard(int x, int y,PlayerColor color);
-
 	bool isSameColor(int x, int y, Draught draught);
 	bool isInLimits(int x, int y);
-	//bool isFree(int x, int y);
 
 	vector<vector<int>>board;
 };

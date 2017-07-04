@@ -4,7 +4,16 @@
 
 Board::Board()
 {
-	initializeBoard();
+	board = {
+		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
+		{ EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE },
+		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
+		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
+		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
+		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED },
+		{ RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY },
+		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED }
+	};
 }
 
 void Board::printBoard(){
@@ -21,11 +30,11 @@ void Board::printBoard(){
 				break;
 			case WHITE:
 				rlutil::setColor(15);
-				cout << " " << PIECE << " |";
+				cout << " " << NORMAL_PIECE << " |";
 				break;
 			case RED:
 				rlutil::setColor(4);
-				cout << " " << PIECE;
+				cout << " " << NORMAL_PIECE;
 				rlutil::setColor(15);
 				cout << " |";
 				break;
@@ -38,25 +47,6 @@ void Board::printBoard(){
 			cout << "---+";
 		cout << endl;
 	}
-}
-
-void Board::initializeBoard()
-{
-	board = {
-		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
-		{ EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE },
-		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
-		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED   },
-		{ RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY },
-		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED   }
-	};													   
-}
-
-void Board::updateBoard(int x, int y,PlayerColor color)
-{
-
 }
 
 bool Board::isSameColor(int x, int y, Draught draught)
@@ -76,247 +66,212 @@ bool Board::isInLimits(int x, int y)
 	return true;
 }
 
-//bool Board::isFree(int x, int y)
-//{
-//	return false;
-//}
-
-
 bool Board::isInLimits(Draught draught, Move move)
 {
+	int draughtX = draught.point.x;
+	int draughtY = draught.point.y;
 	switch (move) {
 		case Move::DIAGONAL_TOP_LEFT: {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x -= 1;
-			y -= 1;
-			if (isInLimits(x, y))
-				return true;
-			return false;
+			int x = draughtX - 1;
+			int y = draughtY - 1;
+			return isInLimits(x, y) ? true : false;
 		}
-
 		case Move::DIAGONAL_TOP_RIGHT: {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x -= 1;
-			y += 1;
-			if (isInLimits(x, y))
-				return true;
-			return false;
+			int x = draughtX - 1;
+			int y = draughtY + 1;
+			return isInLimits(x, y) ? true : false;
 		}
 		case Move::DIAGONAL_DOWN_LEFT: {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x += 1;
-			y -= 1;
-			if (isInLimits(x, y))
-				return true;
-			return false;
+			int x = draughtX + 1;
+			int y = draughtY - 1;
+			return isInLimits(x, y) ? true : false;
 		}
 		case Move::DIAGONAL_DOWN_RIGHT: {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x += 1;
-			y += 1;
-			if (isInLimits(x, y))
-				return true;
-			return false;
+			int x = draughtX + 1;
+			int y = draughtY + 1;
+			return isInLimits(x, y) ? true : false;
 		}
 	}
-	return false;
 }
-
-//MoveStatus Board::remove(Player &player, int x, int y)
-//{
-//	return MoveStatus();
-//}
 
 MoveStatus Board::move(Player &player, Draught&draught, Move move)
 {
+	int draughtX = draught.point.x;
+	int draughtY = draught.point.y;
 	switch (move) {
-	case Move::DIAGONAL_TOP_LEFT: {
-		if (isInLimits(draught, move)) {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x -= 1;
-			y -= 1;
-			if (board[x][y] == EMPTY ) {
-				board[draught.point.x][draught.point.y] = EMPTY;
-				player.updatePosition(draught, x, y);
-				if (draught.playerColor == PlayerColor::PLAYER_RED)
-					board[x][y] = RED;
-				else
-					board[x][y] = WHITE;
-				return MoveStatus::MOVE_BLANK;
-			}
-			else if (isSameColor(x, y, draught))
-				return MoveStatus::MOVE_IMPOSSIBLE;
-			else {
-				int tempX = x - 1;
-				int tempY = y - 1;
-				if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
-				{
+		case Move::DIAGONAL_TOP_LEFT: {
+			if (isInLimits(draught, move)) {
+				int x = draughtX;
+				int y = draughtY;
+				x -= 1;
+				y -= 1;
+				if (board[x][y] == EMPTY ) {
 					board[draught.point.x][draught.point.y] = EMPTY;
-					board[x][y] = EMPTY;
-					Draught aux;
-					aux.point.x = x; aux.point.y = y;
-					player.removeDraught(aux);
-					player.updatePosition(draught, tempX, tempY);
+					player.updatePosition(draught, x, y);
 					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[tempX][tempY] = RED;
+						board[x][y] = RED;
 					else
-						board[tempX][tempY] = WHITE;
+						board[x][y] = WHITE;
 					return MoveStatus::MOVE_BLANK;
 				}
-				else
-				{
+				else if (isSameColor(x, y, draught))
 					return MoveStatus::MOVE_IMPOSSIBLE;
+				else {
+					int tempX = x - 1;
+					int tempY = y - 1;
+					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
+					{
+						board[draught.point.x][draught.point.y] = EMPTY;
+						board[x][y] = EMPTY;
+						Draught aux;
+						aux.point.x = x; aux.point.y = y;
+						player.removeDraught(aux);
+						player.updatePosition(draught, tempX, tempY);
+						if (draught.playerColor == PlayerColor::PLAYER_RED)
+							board[tempX][tempY] = RED;
+						else
+							board[tempX][tempY] = WHITE;
+						return MoveStatus::MOVE_BLANK;
+					}
+					else
+						return MoveStatus::MOVE_IMPOSSIBLE;
 				}
 			}
-		}
-		else
-		{
-			return MoveStatus::MOVE_IMPOSSIBLE;
-		}
-	}
-	case Move::DIAGONAL_TOP_RIGHT: {
-		if (isInLimits(draught, move)) {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x -= 1;
-			y += 1;
-			if (board[x][y] == EMPTY) {
-				board[draught.point.x][draught.point.y] = EMPTY;
-				player.updatePosition(draught, x, y);
-				if (draught.playerColor == PlayerColor::PLAYER_RED)
-					board[x][y] = RED;
-				else
-					board[x][y] = WHITE;
-				return MoveStatus::MOVE_BLANK;
-			}
-			else if (isSameColor(x, y, draught))
+			else
 				return MoveStatus::MOVE_IMPOSSIBLE;
-			else {
-				int tempX = x - 1;
-				int tempY = y + 1;
-				if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
-				{
+		}
+		case Move::DIAGONAL_TOP_RIGHT: {
+			if (isInLimits(draught, move)) {
+				int x = draught.point.x;
+				int y = draught.point.y;
+				x -= 1;
+				y += 1;
+				if (board[x][y] == EMPTY) {
 					board[draught.point.x][draught.point.y] = EMPTY;
-					board[x][y] = EMPTY;
-					Draught aux;
-					aux.point.x = x; aux.point.y = y;
-					player.removeDraught(aux);
-					player.updatePosition(draught, tempX, tempY);
+					player.updatePosition(draught, x, y);
 					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[tempX][tempY] = RED;
+						board[x][y] = RED;
 					else
-						board[tempX][tempY] = WHITE;
+						board[x][y] = WHITE;
 					return MoveStatus::MOVE_BLANK;
 				}
-				else
-				{
+				else if (isSameColor(x, y, draught))
 					return MoveStatus::MOVE_IMPOSSIBLE;
-				}
+				else {
+					int tempX = x - 1;
+					int tempY = y + 1;
+					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
+					{
+						board[draught.point.x][draught.point.y] = EMPTY;
+						board[x][y] = EMPTY;
+						Draught aux;
+						aux.point.x = x; aux.point.y = y;
+						player.removeDraught(aux);
+						player.updatePosition(draught, tempX, tempY);
+						if (draught.playerColor == PlayerColor::PLAYER_RED)
+							board[tempX][tempY] = RED;
+						else
+							board[tempX][tempY] = WHITE;
+						return MoveStatus::MOVE_BLANK;
+					}
+					else
+						return MoveStatus::MOVE_IMPOSSIBLE;
 
+				}
 			}
-		}
-		else
-		{
-			return MoveStatus::MOVE_IMPOSSIBLE;
-		}
-	}
-	case Move::DIAGONAL_DOWN_LEFT: {
-		if (isInLimits(draught, move)) {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x += 1;
-			y -= 1;
-			if (board[x][y] == EMPTY) {
-				board[draught.point.x][draught.point.y] = EMPTY;
-				player.updatePosition(draught, x, y);
-				if (draught.playerColor == PlayerColor::PLAYER_RED)
-					board[x][y] = RED;
-				else
-					board[x][y] = WHITE;
-				return MoveStatus::MOVE_BLANK;
-			}
-			else if (isSameColor(x, y, draught))
+			else
 				return MoveStatus::MOVE_IMPOSSIBLE;
-			else {
-				int tempX = x + 1;
-				int tempY = y - 1;
-				if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
-				{
-					board[draught.point.x][draught.point.y] = EMPTY;
-					board[x][y] = EMPTY;
-					Draught aux;
-					aux.point.x = x; aux.point.y = y;
-					player.removeDraught(aux);
-					player.updatePosition(draught, tempX, tempY);
-					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[tempX][tempY] = RED;
-					else
-						board[tempX][tempY] = WHITE;
-					return MoveStatus::MOVE_BLANK;
-				}
-				else
-				{
-					return MoveStatus::MOVE_IMPOSSIBLE;
-				}
-			}
 		}
-		else
-		{
-			return MoveStatus::MOVE_IMPOSSIBLE;
-		}
-	}
-	case Move::DIAGONAL_DOWN_RIGHT: {
-		if (isInLimits(draught, move)) {
-			int x = draught.point.x;
-			int y = draught.point.y;
-			x += 1;
-			y += 1;
-			if (board[x][y] == EMPTY) {
-				board[draught.point.x][draught.point.y] = EMPTY;
-				player.updatePosition(draught, x, y);
-				if (draught.playerColor == PlayerColor::PLAYER_RED)
-					board[x][y] = RED;
-				else
-					board[x][y] = WHITE;
-				return MoveStatus::MOVE_BLANK;
-			}
-			else if (isSameColor(x, y, draught))
-				return MoveStatus::MOVE_IMPOSSIBLE;
-			else {
-				int tempX = x + 1;
-				int tempY = y + 1;
-				if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
-				{
-					board[draught.point.x][draught.point.y] = EMPTY;
-					board[x][y] = EMPTY;
-					Draught aux;
-					aux.point.x = x; aux.point.y = y;
-					player.removeDraught(aux);
-					player.updatePosition(draught, tempX, tempY);
-					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[tempX][tempY] = RED;
-					else
-						board[tempX][tempY] = WHITE;
-					return MoveStatus::MOVE_BLANK;
-				}
-				else
-				{
-					return MoveStatus::MOVE_IMPOSSIBLE;
-				}
 
+		case Move::DIAGONAL_DOWN_LEFT: {
+			if (isInLimits(draught, move)) {
+				int x = draught.point.x;
+				int y = draught.point.y;
+				x += 1;
+				y -= 1;
+				if (board[x][y] == EMPTY) {
+					board[draught.point.x][draught.point.y] = EMPTY;
+					player.updatePosition(draught, x, y);
+					if (draught.playerColor == PlayerColor::PLAYER_RED)
+						board[x][y] = RED;
+					else
+						board[x][y] = WHITE;
+					return MoveStatus::MOVE_BLANK;
+				}
+				else if (isSameColor(x, y, draught))
+					return MoveStatus::MOVE_IMPOSSIBLE;
+				else {
+					int tempX = x + 1;
+					int tempY = y - 1;
+					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
+					{
+						board[draught.point.x][draught.point.y] = EMPTY;
+						board[x][y] = EMPTY;
+						Draught aux;
+						aux.point.x = x; aux.point.y = y;
+						player.removeDraught(aux);
+						player.updatePosition(draught, tempX, tempY);
+						if (draught.playerColor == PlayerColor::PLAYER_RED)
+							board[tempX][tempY] = RED;
+						else
+							board[tempX][tempY] = WHITE;
+						return MoveStatus::MOVE_BLANK;
+					}
+					else
+						return MoveStatus::MOVE_IMPOSSIBLE;
+				}
 			}
+			else
+				return MoveStatus::MOVE_IMPOSSIBLE;
 		}
-		else
-		{
-			return MoveStatus::MOVE_IMPOSSIBLE;
+
+		case Move::DIAGONAL_DOWN_RIGHT: {
+			if (isInLimits(draught, move)) {
+				int x = draught.point.x;
+				int y = draught.point.y;
+				x += 1;
+				y += 1;
+				if (board[x][y] == EMPTY) {
+					board[draught.point.x][draught.point.y] = EMPTY;
+					player.updatePosition(draught, x, y);
+					if (draught.playerColor == PlayerColor::PLAYER_RED)
+						board[x][y] = RED;
+					else
+						board[x][y] = WHITE;
+					return MoveStatus::MOVE_BLANK;
+				}
+				else if (isSameColor(x, y, draught))
+					return MoveStatus::MOVE_IMPOSSIBLE;
+				else {
+					int tempX = x + 1;
+					int tempY = y + 1;
+					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
+					{
+						board[draught.point.x][draught.point.y] = EMPTY;
+						board[x][y] = EMPTY;
+						Draught aux;
+						aux.point.x = x; aux.point.y = y;
+						player.removeDraught(aux);
+						player.updatePosition(draught, tempX, tempY);
+						if (draught.playerColor == PlayerColor::PLAYER_RED)
+							board[tempX][tempY] = RED;
+						else
+							board[tempX][tempY] = WHITE;
+						return MoveStatus::MOVE_BLANK;
+					}
+					else
+						return MoveStatus::MOVE_IMPOSSIBLE;
+				}
+			}
+			else
+				return MoveStatus::MOVE_IMPOSSIBLE;
 		}
 	}
-	}
+}
+
+void Board::updateBoard(int x, int y, PlayerColor color)
+{
+
 }
 
 

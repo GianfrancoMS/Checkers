@@ -104,7 +104,7 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 				int x = draughtX - 1;
 				int y = draughtY - 1;
 				if (board[x][y] == EMPTY ) {
-					board[draught.point.x][draught.point.y] = EMPTY;
+					board[draughtX][draughtY] = EMPTY;
 					player.updatePosition(draught, x, y);
 					if (draught.playerColor == PlayerColor::PLAYER_RED)
 						board[x][y] = RED;

@@ -3,36 +3,27 @@
 
 Player::Player(PlayerColor color, Board board)
 {
-	if (color == PlayerColor::PLAYER_WHITE)
-	{
-		this->color = color;
-		for (auto i = 0; i < 3; ++i) {
-			int x = i;
-			for (auto j = i % 2 == 0 ? 0 : 1; j < board.COLUMNS; j += 2) {
-				Draught draught;
-				draught.point.x = x;
-				draught.point.y = j;
-				draught.draughtType = DraughtType::NORMAL;
-				draught.playerColor = this->color;
-				draughts.insert(draught);
-			}
+	this->color = color;
+	int begin = 0;
+	int end = 0;
+	if (color == PlayerColor::PLAYER_WHITE) {
+		begin = 0;
+		end = 3;
+	}
+	else {
+		begin = 5;
+		end = 8;
+	}
+	for (auto x = begin; x < end; ++x) {
+		for (auto y = x % 2 == 0 ? 0 : 1; y < board.COLUMNS; y += 2) {
+			Draught draught;
+			draught.point.x = x;
+			draught.point.y = y;
+			draught.draughtType = DraughtType::NORMAL;
+			draught.playerColor = this->color;
+			draughts.insert(draught);
 		}
 	}
-	else
-	{
-		this->color = color;
-		for (auto i = 5; i < 8; ++i) {
-			int x = i;
-			for (auto j = i % 2 == 0 ? 0 : 1; j < board.COLUMNS; j += 2) {
-				Draught draught;
-				draught.point.x = x;
-				draught.point.y = j;
-				draught.draughtType = DraughtType::NORMAL;
-				draught.playerColor = this->color;
-				draughts.insert(draught);
-			}
-		}
-	}	
 }
 
 void Player::removeDraught(Draught draught)
@@ -40,10 +31,10 @@ void Player::removeDraught(Draught draught)
 	for each (Draught obj in draughts)
 	{
 		if (obj.point.x == draught.point.x && obj.point.y == draught.point.y)
-		{			
+		{
 			draught = obj;
 		}
-	}	
+	}
 	draughts.erase(draught);
 }
 
@@ -72,7 +63,7 @@ void Player::updatePosition(Draught draught, int x, int y)
 	else
 	{
 		draughts.insert(newDraught);
-	}	
+	}
 }
 
 Draught Player::getDraught(int x, int y)

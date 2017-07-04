@@ -139,27 +139,28 @@ bool Board::isInLimits(Draught draught, Move move)
 	int draughtX = draught.point.x;
 	int draughtY = draught.point.y;
 	switch (move) {
-	case Move::DIAGONAL_TOP_LEFT: {
-		int x = draughtX - 1;
-		int y = draughtY - 1;
-		return isInLimits(x, y) ? true : false;
+		case Move::DIAGONAL_TOP_LEFT: {
+			int x = draughtX - 1;
+			int y = draughtY - 1;
+			return isInLimits(x, y);
+		}
+		case Move::DIAGONAL_TOP_RIGHT: {
+			int x = draughtX - 1;
+			int y = draughtY + 1;
+			return isInLimits(x, y);
+		}
+		case Move::DIAGONAL_DOWN_LEFT: {
+			int x = draughtX + 1;
+			int y = draughtY - 1;
+			return isInLimits(x, y);
+		}
+		case Move::DIAGONAL_DOWN_RIGHT: {
+			int x = draughtX + 1;
+			int y = draughtY + 1;
+			return isInLimits(x, y);
+		}
 	}
-	case Move::DIAGONAL_TOP_RIGHT: {
-		int x = draughtX - 1;
-		int y = draughtY + 1;
-		return isInLimits(x, y) ? true : false;
-	}
-	case Move::DIAGONAL_DOWN_LEFT: {
-		int x = draughtX + 1;
-		int y = draughtY - 1;
-		return isInLimits(x, y) ? true : false;
-	}
-	case Move::DIAGONAL_DOWN_RIGHT: {
-		int x = draughtX + 1;
-		int y = draughtY + 1;
-		return isInLimits(x, y) ? true : false;
-	}
-	}
+	return false;
 }
 
 void Board::updateBoard(int x, int y, Player player)

@@ -16,8 +16,8 @@ void Board::fillDraughts()
 			Draught draught;
 			draught.point.x = x;
 			draught.point.y = j;
-			draught.draughtType = DraughtType::NORMAL;
-			draught.playerColor = PlayerColor::PLAYER_WHITE;
+			draught.type = DraughtType::NORMAL;
+			draught.color = PlayerColor::PLAYER_WHITE;
 			whiteDraughts.insert(draught);
 		}
 	}
@@ -27,8 +27,8 @@ void Board::fillDraughts()
 			Draught draught;
 			draught.point.x = x;
 			draught.point.y = j;
-			draught.draughtType = DraughtType::NORMAL;
-			draught.playerColor = PlayerColor::PLAYER_RED;
+			draught.type = DraughtType::NORMAL;
+			draught.color = PlayerColor::PLAYER_RED;
 			redDraughts.insert(draught);
 		}
 	}
@@ -81,27 +81,47 @@ void Board::printBoard(){
 	}
 }
 
-vector<Draught> Board::possibleMoves(PlayerColor color)
+vector<Draught> Board::possibleMoves(Player player)
 {
 	vector<Draught>possibleMoves;
-	if (color == PlayerColor::PLAYER_WHITE) {
+	if (player.color == PlayerColor::PLAYER_WHITE) {
 		for (auto draught : whiteDraughts) {
-			
+			if (move(draught, Move::DIAGONAL_DOWN_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_DOWN_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
+				possibleMoves.push_back(draught);
+				continue;
+			}
+
+			if (draught.type == DraughtType::QUEEN) {
+				if (move(draught, Move::DIAGONAL_TOP_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_TOP_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
+					possibleMoves.push_back(draught);
+					continue;
+				}
+			}
 		}
 	}
 	else {
 		for (auto draught : redDraughts) {
+			if (move(draught, Move::DIAGONAL_TOP_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_TOP_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
+				possibleMoves.push_back(draught);
+				continue;
+			}
 
+			if (draught.type == DraughtType::QUEEN) {
+				if (move(draught, Move::DIAGONAL_DOWN_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_DOWN_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
+					possibleMoves.push_back(draught);
+					continue;
+				}
+			}
 		}
 	}
-
+	return possibleMoves;
 }
 
 bool Board::isSameColor(int x, int y, Draught draught)
 {
-	if (board[x][y] == RED && draught.playerColor == PlayerColor::PLAYER_RED)
+	if (board[x][y] == RED && draught.color == PlayerColor::PLAYER_RED)
 		return true;
-	else if (board[x][y] == WHITE && draught.playerColor == PlayerColor::PLAYER_WHITE)
+	else if (board[x][y] == WHITE && draught.color == PlayerColor::PLAYER_WHITE)
 		return true;
 	else
 		return false;
@@ -142,9 +162,9 @@ bool Board::isInLimits(Draught draught, Move move)
 	}
 }
 
-void Board::updateBoard(int x, int y, PlayerColor color)
+void Board::updateBoard(int x, int y, Player player)
 {
-	color == PlayerColor::PLAYER_WHITE ? board[x][y] = WHITE : board[x][y] = RED;
+	player.color == PlayerColor::PLAYER_WHITE ? board[x][y] = WHITE : board[x][y] = RED;
 }
 
 void Board::updateBoard(int x, int y, int color)
@@ -152,7 +172,7 @@ void Board::updateBoard(int x, int y, int color)
 	board[x][y] = color;
 }
 
-MoveStatus Board::move(Player &player, Draught&draught, Move move)
+MoveStatus Board::move(Draught&draught, Move move)
 {
 	int draughtX = draught.point.x;
 	int draughtY = draught.point.y;

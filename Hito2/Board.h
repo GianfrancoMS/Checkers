@@ -24,8 +24,8 @@ struct Point
 struct Draught
 {
 	Point point;
-	DraughtType draughtType;
-	PlayerColor playerColor;
+	DraughtType type;
+	PlayerColor color;
 
 	bool operator == (const Draught& draught) const {
 		return this->point == draught.point;
@@ -51,12 +51,10 @@ public:
 	static const int RED = 2;
 
 	bool isInLimits(Draught draught, Move move);
-
-	MoveStatus move(Player &player, Draught&draught, Move move);
 	
 	void printBoard();
 
-	vector<Draught> possibleMoves(PlayerColor color);
+	vector<Draught> possibleMoves(Player player);
 
 	set<Draught> whiteDraughts;
 	set<Draught> redDraughts;
@@ -66,13 +64,14 @@ private:
 	static const char NORMAL_PIECE = '@';
 	static const char QUEEN_PIECE = '#';
 
-	void updateBoard(int x, int y,PlayerColor color);
+	void updateBoard(int x, int y, Player player);
 	void updateBoard(int x, int y, int color);
 	bool isSameColor(int x, int y, Draught draught);
 	bool isInLimits(int x, int y);
 	void fillDraughts();
 	void fillBoard();
 
+	MoveStatus move(Draught&draught, Move move);
 	vector<vector<int>>board;
 };
 

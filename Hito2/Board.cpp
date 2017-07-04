@@ -94,6 +94,16 @@ bool Board::isInLimits(Draught draught, Move move)
 	}
 }
 
+void Board::updateBoard(int x, int y, PlayerColor color)
+{
+	color == PlayerColor::PLAYER_WHITE ? board[x][y] = WHITE : board[x][y] = RED;
+}
+
+void Board::updateBoard(int x, int y, int color)
+{
+	board[x][y] = color;
+}
+
 MoveStatus Board::move(Player &player, Draught&draught, Move move)
 {
 	int draughtX = draught.point.x;
@@ -104,12 +114,9 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 				int x = draughtX - 1;
 				int y = draughtY - 1;
 				if (board[x][y] == EMPTY ) {
-					board[draughtX][draughtY] = EMPTY;
+					updateBoard(draughtX, draughtY, EMPTY);
 					player.updatePosition(draught, x, y);
-					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[x][y] = RED;
-					else
-						board[x][y] = WHITE;
+					updateBoard(x, y, player.color);
 					return MoveStatus::MOVE_BLANK;
 				}
 				else if (isSameColor(x, y, draught))
@@ -119,16 +126,14 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 					int tempY = y - 1;
 					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
 					{
-						board[draught.point.x][draught.point.y] = EMPTY;
-						board[x][y] = EMPTY;
-						Draught aux;
-						aux.point.x = x; aux.point.y = y;
-						player.removeDraught(aux);
+						updateBoard(draughtX, draughtY, EMPTY);
+						updateBoard(x, y, EMPTY);
+						Draught newDraught = draught;
+						newDraught.point.x = x;
+						newDraught.point.y = y;
+						player.removeDraught(newDraught);
 						player.updatePosition(draught, tempX, tempY);
-						if (draught.playerColor == PlayerColor::PLAYER_RED)
-							board[tempX][tempY] = RED;
-						else
-							board[tempX][tempY] = WHITE;
+						updateBoard(tempX, tempY, player.color);
 						return MoveStatus::MOVE_BLANK;
 					}
 					else
@@ -143,12 +148,9 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 				int x = draughtX - 1;
 				int y = draughtY + 1;
 				if (board[x][y] == EMPTY) {
-					board[draught.point.x][draught.point.y] = EMPTY;
+					updateBoard(draughtX, draughtY, EMPTY);
 					player.updatePosition(draught, x, y);
-					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[x][y] = RED;
-					else
-						board[x][y] = WHITE;
+					updateBoard(x, y, player.color);
 					return MoveStatus::MOVE_BLANK;
 				}
 				else if (isSameColor(x, y, draught))
@@ -158,16 +160,14 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 					int tempY = y + 1;
 					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
 					{
-						board[draught.point.x][draught.point.y] = EMPTY;
-						board[x][y] = EMPTY;
-						Draught aux;
-						aux.point.x = x; aux.point.y = y;
-						player.removeDraught(aux);
-						player.updatePosition(draught, tempX, tempY);
-						if (draught.playerColor == PlayerColor::PLAYER_RED)
-							board[tempX][tempY] = RED;
-						else
-							board[tempX][tempY] = WHITE;
+						updateBoard(draughtX, draughtY, EMPTY);
+						updateBoard(x, y, EMPTY);
+						Draught newDraught = draught;
+						newDraught.point.x = x; 
+						newDraught.point.y = y;
+						player.removeDraught(newDraught);
+						player.updatePosition(newDraught, tempX, tempY);
+						updateBoard(tempX, tempY, player.color);
 						return MoveStatus::MOVE_BLANK;
 					}
 					else
@@ -184,12 +184,9 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 				int x = draughtX + 1;
 				int y = draughtY - 1;
 				if (board[x][y] == EMPTY) {
-					board[draught.point.x][draught.point.y] = EMPTY;
+					updateBoard(draughtX, draughtY, EMPTY);
 					player.updatePosition(draught, x, y);
-					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[x][y] = RED;
-					else
-						board[x][y] = WHITE;
+					updateBoard(x, y, player.color);
 					return MoveStatus::MOVE_BLANK;
 				}
 				else if (isSameColor(x, y, draught))
@@ -199,17 +196,14 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 					int tempY = y - 1;
 					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
 					{
-						board[draught.point.x][draught.point.y] = EMPTY;
-						board[x][y] = EMPTY;
-						Draught aux;
-						aux.point.x = x; aux.point.y = y;
-						player.removeDraught(aux);
-						player.updatePosition(draught, tempX, tempY);
-						if (draught.playerColor == PlayerColor::PLAYER_RED)
-							board[tempX][tempY] = RED;
-						else
-							board[tempX][tempY] = WHITE;
-						return MoveStatus::MOVE_BLANK;
+						updateBoard(draughtX, draughtY, EMPTY);
+						updateBoard(x, y, EMPTY);
+						Draught newDraught = draught;
+						newDraught.point.x = x;
+						newDraught.point.y = y;
+						player.removeDraught(newDraught);
+						player.updatePosition(newDraught, tempX, tempY);
+						updateBoard(tempX, tempY, player.color);
 					}
 					else
 						return MoveStatus::MOVE_IMPOSSIBLE;
@@ -224,12 +218,9 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 				int x = draughtX + 1;
 				int y = draughtY + 1;
 				if (board[x][y] == EMPTY) {
-					board[draught.point.x][draught.point.y] = EMPTY;
+					updateBoard(draughtX, draughtY, EMPTY);
 					player.updatePosition(draught, x, y);
-					if (draught.playerColor == PlayerColor::PLAYER_RED)
-						board[x][y] = RED;
-					else
-						board[x][y] = WHITE;
+					updateBoard(x, y, player.color);
 					return MoveStatus::MOVE_BLANK;
 				}
 				else if (isSameColor(x, y, draught))
@@ -239,17 +230,14 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 					int tempY = y + 1;
 					if (isInLimits(tempX, tempY) && board[tempX][tempY] == EMPTY)
 					{
-						board[draught.point.x][draught.point.y] = EMPTY;
-						board[x][y] = EMPTY;
-						Draught aux;
-						aux.point.x = x; aux.point.y = y;
-						player.removeDraught(aux);
-						player.updatePosition(draught, tempX, tempY);
-						if (draught.playerColor == PlayerColor::PLAYER_RED)
-							board[tempX][tempY] = RED;
-						else
-							board[tempX][tempY] = WHITE;
-						return MoveStatus::MOVE_BLANK;
+						updateBoard(draughtX, draughtY, EMPTY);
+						updateBoard(x, y, EMPTY);
+						Draught newDraught = draught;
+						newDraught.point.x = x;
+						newDraught.point.y = y;
+						player.removeDraught(newDraught);
+						player.updatePosition(newDraught, tempX, tempY);
+						updateBoard(tempX, tempY, player.color);
 					}
 					else
 						return MoveStatus::MOVE_IMPOSSIBLE;
@@ -260,10 +248,3 @@ MoveStatus Board::move(Player &player, Draught&draught, Move move)
 		}
 	}
 }
-
-void Board::updateBoard(int x, int y, PlayerColor color)
-{
-
-}
-
-

@@ -62,6 +62,8 @@ private:
 	static const char QUEEN_PIECE = '#';
 
 	void updateBoard(int x, int y,PlayerColor color);
+	void updateBoard(int x, int y, int color);
+
 	bool isSameColor(int x, int y, Draught draught);
 	bool isInLimits(int x, int y);
 

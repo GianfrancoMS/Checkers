@@ -299,7 +299,7 @@ void Board::updatePosition(Player player, Draught draught, int newX, int newY)
 		removeDraught(player, draught);
 		whiteDraughts.insert(newDraught);
 		updateBoard(newX, newY, WHITE);
-		if (newDraught.point.x == 0)
+		if (newDraught.point.x == 7)
 			updateToQueen(player, newDraught);
 	}
 }

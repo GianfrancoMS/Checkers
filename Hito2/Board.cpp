@@ -4,16 +4,8 @@
 
 Board::Board()
 {
-	board = {
-		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
-		{ EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE },
-		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
-		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
-		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED },
-		{ RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY },
-		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED }
-	};
+	fillBoard();
+	fillDraughts();
 }
 
 void Board::printBoard(){
@@ -64,6 +56,46 @@ bool Board::isInLimits(int x, int y)
 	if (x <= -1 || x >= ROWS || y <= -1 || y >= COLUMNS)
 		return false;
 	return true;
+}
+
+void Board::fillDraughts()
+{
+	for (auto i = 0; i < 3; ++i) {
+		int x = i;
+		for (auto j = i % 2 == 0 ? 0 : 1; j < COLUMNS; j += 2) {
+			Draught draught;
+			draught.point.x = x;
+			draught.point.y = j;
+			draught.draughtType = DraughtType::NORMAL;
+			draught.playerColor = PlayerColor::PLAYER_WHITE;
+			whiteDraughts.insert(draught);
+		}
+	}
+	for (auto i = 5; i < 8; ++i) {
+		int x = i;
+		for (auto j = i % 2 == 0 ? 0 : 1; j < COLUMNS; j += 2) {
+			Draught draught;
+			draught.point.x = x;
+			draught.point.y = j;
+			draught.draughtType = DraughtType::NORMAL;
+			draught.playerColor = PlayerColor::PLAYER_RED;
+			redDraughts.insert(draught);
+		}
+	}
+}
+
+void Board::fillBoard()
+{
+	board = {
+		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
+		{ EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE },
+		{ WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY, WHITE, EMPTY },
+		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
+		{ EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY },
+		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED },
+		{ RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY },
+		{ EMPTY, RED  , EMPTY, RED  , EMPTY, RED  , EMPTY, RED }
+	};
 }
 
 bool Board::isInLimits(Draught draught, Move move)

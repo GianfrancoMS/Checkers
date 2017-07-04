@@ -21,7 +21,5 @@ public:
 	Draught getDraught(int x, int y);
 	
 	set<Draught> draughts;
-
-
 };
 

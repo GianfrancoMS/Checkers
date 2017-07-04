@@ -2,6 +2,7 @@
 #include <vector>
 #include <tuple>
 #include "Utils.h"
+#include <set>
 
 using namespace std;
 
@@ -50,11 +51,11 @@ public:
 	static const int RED = 2;
 
 	bool isInLimits(Draught draught, Move move);
-
-	/*MoveStatus remove(Player &player, int x , int y);*/
 	MoveStatus move(Player &player, Draught&draught, Move move);
-
 	void printBoard();
+
+	set<Draught> whiteDraughts;
+	set<Draught> redDraughts;
 
 private:
 
@@ -63,9 +64,10 @@ private:
 
 	void updateBoard(int x, int y,PlayerColor color);
 	void updateBoard(int x, int y, int color);
-
 	bool isSameColor(int x, int y, Draught draught);
 	bool isInLimits(int x, int y);
+	void fillDraughts();
+	void fillBoard();
 
 	vector<vector<int>>board;
 };

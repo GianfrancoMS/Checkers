@@ -173,7 +173,7 @@ void Board::updateBoard(int x, int y, int color)
 	board[x][y] = color;
 }
 
-MoveStatus Board::move(Draught&draught, Move move)
+MoveStatus Board::move(Draught draught, Move move)
 {
 	int draughtX = draught.point.x;
 	int draughtY = draught.point.y;

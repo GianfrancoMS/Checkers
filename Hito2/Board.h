@@ -78,7 +78,7 @@ private:
 	void fillDraughts();
 	void fillBoard();
 
-	MoveStatus move(Draught&draught, Move move);
+	MoveStatus move(Draught draught, Move move);
 
 	vector<vector<int>>board;
 };

@@ -188,24 +188,14 @@ void Board::removeDraught(Player player, Draught draught) {
 }
 
 void Board::updateToQueen(Player player, Draught draught) {
-	if (player.color == PlayerColor::PLAYER_RED)
-	{
-		auto queen = *redDraughts.find(draught);
-		queen.type = DraughtType::QUEEN;
-		redDraughts.erase(draught);
-		redDraughts.insert(queen);
-	}
-	else {
-		auto queen = *whiteDraughts.find(draught);
-		queen.type = DraughtType::QUEEN;
-		whiteDraughts.erase(draught);
-		whiteDraughts.insert(queen);
-	}
+	Draught queen = draught;
+	queen.type = DraughtType::QUEEN;
+	redDraughts.erase(draught);
+	player.color == PlayerColor::PLAYER_RED ? redDraughts.insert(queen) : whiteDraughts.insert(queen);
 }
 
-void Board::updatePosition(Player player, Draught draught, int newX, int newY)
-{
-	auto newDraught = draught;
+void Board::updatePosition(Player player, Draught draught, int newX, int newY){
+	Draught newDraught = draught;
 	newDraught.point.x = newX;
 	newDraught.point.y = newY;
 	removeDraught(player, draught);

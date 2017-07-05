@@ -36,6 +36,11 @@ struct Draught
 	}
 };
 
+struct Play {
+	Draught draught;
+	Move move;
+};
+
 class Board
 {
 public:
@@ -62,6 +67,7 @@ public:
 
 	set<Draught> whiteDraughts;
 	set<Draught> redDraughts;
+
 private:
 
 	static const char NORMAL_PIECE = '@';

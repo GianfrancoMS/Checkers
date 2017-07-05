@@ -1,12 +1,3 @@
 #include "MoveAlgorithm.h"
 
-
-
-MoveAlgorithm::MoveAlgorithm()
-{
-}
-
-
-MoveAlgorithm::~MoveAlgorithm()
-{
-}
+MoveAlgorithm::~MoveAlgorithm() = default;

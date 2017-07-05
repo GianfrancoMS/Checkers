@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "rlutil.h"
+#include <functional>
 
 Board::Board()
 {
@@ -80,7 +81,7 @@ void Board::printBoard() {
 	}
 }
 
-set<Draught> Board::possibleMoves(const Player& player)
+set<Draught> Board::possibleMovesWhite(const Player& player)
 {
 	set<Draught>possibleMoves;
 	if (player.color == ColorPlayer::PLAYER_WHITE) {
@@ -108,11 +109,13 @@ set<Draught> Board::possibleMoves(const Player& player)
 				if (move(draught, Move::DIAGONAL_DOWN_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_DOWN_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
 					possibleMoves.insert(draught);
 					continue;
-			}
+				}
 		}
 	}
 	return possibleMoves;
 }
+
+
 
 int Board::possibleMoves(const Player& player, MoveStatus status)
 {
@@ -157,7 +160,7 @@ Draught Board::getDraught(ColorPlayer color, int x, int y)
 	Draught draught;
 	draught.point.x = x;
 	draught.point.y = y;
-	return  (color == ColorPlayer::PLAYER_RED) ? 
+	return  (color == ColorPlayer::PLAYER_RED) ?
 		*redDraughts.find(draught) : *whiteDraughts.find(draught);
 }
 
@@ -183,26 +186,26 @@ bool Board::isInLimits(Draught draught, Move move)
 	int draughtX = draught.point.x;
 	int draughtY = draught.point.y;
 	switch (move) {
-		case Move::DIAGONAL_TOP_LEFT: {
-			int x = draughtX - 1;
-			int y = draughtY - 1;
-			return isInLimits(x, y);
-		}
-		case Move::DIAGONAL_TOP_RIGHT: {
-			int x = draughtX - 1;
-			int y = draughtY + 1;
-			return isInLimits(x, y);
-		}
-		case Move::DIAGONAL_DOWN_LEFT: {
-			int x = draughtX + 1;
-			int y = draughtY - 1;
-			return isInLimits(x, y);
-		}
-		case Move::DIAGONAL_DOWN_RIGHT: {
-			int x = draughtX + 1;
-			int y = draughtY + 1;
-			return isInLimits(x, y);
-		}
+	case Move::DIAGONAL_TOP_LEFT: {
+		int x = draughtX - 1;
+		int y = draughtY - 1;
+		return isInLimits(x, y);
+	}
+	case Move::DIAGONAL_TOP_RIGHT: {
+		int x = draughtX - 1;
+		int y = draughtY + 1;
+		return isInLimits(x, y);
+	}
+	case Move::DIAGONAL_DOWN_LEFT: {
+		int x = draughtX + 1;
+		int y = draughtY - 1;
+		return isInLimits(x, y);
+	}
+	case Move::DIAGONAL_DOWN_RIGHT: {
+		int x = draughtX + 1;
+		int y = draughtY + 1;
+		return isInLimits(x, y);
+	}
 	}
 	return false;
 }
@@ -229,12 +232,12 @@ void Board::removeDraught(ColorPlayer color, Draught draught) {
 	updateBoard(draught.point.x, draught.point.y, EMPTY);
 }
 
-void Board::updatePosition(ColorPlayer color, Draught draught, int newX, int newY){
+void Board::updatePosition(ColorPlayer color, Draught draught, int newX, int newY) {
 	Draught newDraught = draught;
 	newDraught.point.x = newX;
 	newDraught.point.y = newY;
 	removeDraught(color, draught);
-	if (color == ColorPlayer::PLAYER_RED){
+	if (color == ColorPlayer::PLAYER_RED) {
 		redDraughts.insert(newDraught);
 		updateBoard(newX, newY, RED);
 		if (newDraught.point.x == 0)
@@ -339,88 +342,88 @@ MoveStatus Board::move(const Player& player, Draught draught, Move move) {
 
 	if (draughtMove == MoveStatus::MOVE_IMPOSSIBLE)
 		return MoveStatus::MOVE_IMPOSSIBLE;
-	else{
+	else {
 		switch (move) {
-			case Move::DIAGONAL_TOP_LEFT: {
-				int newX = draughtX - 1;
-				int newY = draughtY - 1;
-				if (draughtMove == MoveStatus::MOVE_BLANK) {
-					updatePosition(player.color, draught, newX, newY);
-					return MoveStatus::MOVE_BLANK;
-				}
-				else {
-					int tempX = newX - 1;
-					int tempY = newY - 1;
-
-					Draught deletedDraught = getDraught(enemyColor, newX, newY);
-					removeDraught(enemyColor, deletedDraught);
-
-					updatePosition(player.color, draught, tempX, tempY);
-
-					return MoveStatus::MOVE_ENEMY;
-				}
-				break;
+		case Move::DIAGONAL_TOP_LEFT: {
+			int newX = draughtX - 1;
+			int newY = draughtY - 1;
+			if (draughtMove == MoveStatus::MOVE_BLANK) {
+				updatePosition(player.color, draught, newX, newY);
+				return MoveStatus::MOVE_BLANK;
 			}
-			case Move::DIAGONAL_TOP_RIGHT: {
-				int newX = draughtX - 1;
-				int newY = draughtY + 1;
-				if (draughtMove == MoveStatus::MOVE_BLANK) {
-					updatePosition(player.color, draught, newX, newY);
-					return MoveStatus::MOVE_BLANK;
-				}
-				else {
-					int tempX = newX - 1;
-					int tempY = newY + 1;
+			else {
+				int tempX = newX - 1;
+				int tempY = newY - 1;
 
-					Draught deletedDraught = getDraught(enemyColor, newX, newY);
-					removeDraught(enemyColor, deletedDraught);
+				Draught deletedDraught = getDraught(enemyColor, newX, newY);
+				removeDraught(enemyColor, deletedDraught);
 
-					updatePosition(player.color, draught, tempX, tempY);
+				updatePosition(player.color, draught, tempX, tempY);
 
-					return MoveStatus::MOVE_ENEMY;
-				}
-				break;
+				return MoveStatus::MOVE_ENEMY;
 			}
-			case Move::DIAGONAL_DOWN_LEFT: {
-				int newX = draughtX + 1;
-				int newY = draughtY - 1;
-				if (draughtMove == MoveStatus::MOVE_BLANK) {
-					updatePosition(player.color, draught, newX, newY);
-					return MoveStatus::MOVE_BLANK;
-				}
-				else {
-					int tempX = newX + 1;
-					int tempY = newY - 1;
-
-					Draught deletedDraught = getDraught(enemyColor, newX, newY);
-					removeDraught(enemyColor, deletedDraught);
-
-					updatePosition(player.color, draught, tempX, tempY);
-
-					return MoveStatus::MOVE_ENEMY;
-				}
-				break;
+			break;
+		}
+		case Move::DIAGONAL_TOP_RIGHT: {
+			int newX = draughtX - 1;
+			int newY = draughtY + 1;
+			if (draughtMove == MoveStatus::MOVE_BLANK) {
+				updatePosition(player.color, draught, newX, newY);
+				return MoveStatus::MOVE_BLANK;
 			}
-			case Move::DIAGONAL_DOWN_RIGHT: {
-				int newX = draughtX + 1;
-				int newY = draughtY + 1;
-				if (draughtMove == MoveStatus::MOVE_BLANK) {
-					updatePosition(player.color, draught, newX, newY);
-					return MoveStatus::MOVE_BLANK;
-				}
-				else {
-					int tempX = newX + 1;
-					int tempY = newY + 1;
+			else {
+				int tempX = newX - 1;
+				int tempY = newY + 1;
 
-					Draught deletedDraught = getDraught(enemyColor, newX, newY);
-					removeDraught(enemyColor, deletedDraught);
+				Draught deletedDraught = getDraught(enemyColor, newX, newY);
+				removeDraught(enemyColor, deletedDraught);
 
-					updatePosition(player.color, draught, tempX, tempY);
+				updatePosition(player.color, draught, tempX, tempY);
 
-					return MoveStatus::MOVE_ENEMY;
-				}
-				break;
+				return MoveStatus::MOVE_ENEMY;
 			}
+			break;
+		}
+		case Move::DIAGONAL_DOWN_LEFT: {
+			int newX = draughtX + 1;
+			int newY = draughtY - 1;
+			if (draughtMove == MoveStatus::MOVE_BLANK) {
+				updatePosition(player.color, draught, newX, newY);
+				return MoveStatus::MOVE_BLANK;
+			}
+			else {
+				int tempX = newX + 1;
+				int tempY = newY - 1;
+
+				Draught deletedDraught = getDraught(enemyColor, newX, newY);
+				removeDraught(enemyColor, deletedDraught);
+
+				updatePosition(player.color, draught, tempX, tempY);
+
+				return MoveStatus::MOVE_ENEMY;
+			}
+			break;
+		}
+		case Move::DIAGONAL_DOWN_RIGHT: {
+			int newX = draughtX + 1;
+			int newY = draughtY + 1;
+			if (draughtMove == MoveStatus::MOVE_BLANK) {
+				updatePosition(player.color, draught, newX, newY);
+				return MoveStatus::MOVE_BLANK;
+			}
+			else {
+				int tempX = newX + 1;
+				int tempY = newY + 1;
+
+				Draught deletedDraught = getDraught(enemyColor, newX, newY);
+				removeDraught(enemyColor, deletedDraught);
+
+				updatePosition(player.color, draught, tempX, tempY);
+
+				return MoveStatus::MOVE_ENEMY;
+			}
+			break;
+		}
 		}
 		return MoveStatus::MOVE_IMPOSSIBLE;
 	}

@@ -15,7 +15,7 @@ int main() {
 	{
 		board.printBoard();
 
-		auto plays = greedy.moveDraught(board, playerRED);
+		auto plays = greedy.moveDraught(board, playerWHITE);
 
 		if (plays.moves.empty()) {
 			cout << "Sorry. I can't move any longer" << endl;
@@ -25,11 +25,11 @@ int main() {
 			while (!plays.moves.empty()) {
 				auto play = plays.moves.front();
 				plays.moves.pop();
-				board.move(playerRED, plays.draught, play);
+				board.move(playerWHITE, plays.draught, play);
 				cin.get();
 				cin.get();
 			}
-			cout << "Kills: " << board.possibleMoves(playerRED, MoveStatus::MOVE_ENEMY) << endl;
+			cout << "Kills: " << board.possibleMoves(playerWHITE, MoveStatus::MOVE_ENEMY) << endl;
 			cout << "Heuristic 1: " << get<0>(plays.heuristic.variables) << endl;
 			cout << "Heuristic 2: " << get<1>(plays.heuristic.variables) << endl;
 		}

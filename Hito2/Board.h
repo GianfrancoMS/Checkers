@@ -12,12 +12,13 @@ struct Point
 {
 	int x;
 	int y;
-	bool operator == (const Point& point) const {
-		return tie(this->x, this->y) == tie(point.x, point.y);
-	}
 
 	bool operator < (const Point& point) const {
 		return tie(this->x, this->y) < tie(point.x, point.y);
+	}
+
+	bool operator > (const Point& point) const {
+		return tie(this->x, this->y) > tie(point.x, point.y);
 	}
 };
 
@@ -27,12 +28,12 @@ struct Draught
 	DraughtType type;
 	ColorPlayer color;
 
-	bool operator == (const Draught& draught) const {
-		return this->point == draught.point;
-	}
-
 	bool operator < (const Draught& draught) const {
 		return this->point < draught.point;
+	}
+
+	bool operator > (const Draught& draught) const {
+		return this->point > draught.point;
 	}
 };
 
@@ -91,7 +92,8 @@ public:
 
 	void printBoard();
 
-	set<Draught> possibleMoves(const Player& player);
+	set<Draught,greater<Draught>() > possibleMovesWhite(const Player& player);
+	set<Draught, less<Draught>() > possibleMovesRed(const Player& player);
 
 	int possibleMoves(const Player& player, MoveStatus status);
 

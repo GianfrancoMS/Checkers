@@ -91,12 +91,11 @@ set<Draught> Board::possibleMoves(Player player)
 				continue;
 			}
 
-			if (draught.type == DraughtType::QUEEN) {
+			if (draught.type == DraughtType::QUEEN)
 				if (move(draught, Move::DIAGONAL_TOP_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_TOP_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
 					possibleMoves.insert(draught);
 					continue;
 				}
-			}
 		}
 	}
 	else {
@@ -106,12 +105,11 @@ set<Draught> Board::possibleMoves(Player player)
 				continue;
 			}
 
-			if (draught.type == DraughtType::QUEEN) {
+			if (draught.type == DraughtType::QUEEN)
 				if (move(draught, Move::DIAGONAL_DOWN_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_DOWN_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
 					possibleMoves.insert(draught);
 					continue;
 				}
-			}
 		}
 	}
 	return possibleMoves;

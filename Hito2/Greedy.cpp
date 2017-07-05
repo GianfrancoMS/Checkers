@@ -1,12 +1,14 @@
 #include "Greedy.h"
+#include "Board.h"
+#include "Player.h"
 
 
-
-Greedy::Greedy()
+Play Greedy::moveDraught(Board board, Player player)
 {
+	return recursiveMoveDraught(board, player);
 }
 
-
-Greedy::~Greedy()
+Play Greedy::recursiveMoveDraught(Board board, Player player)
 {
+	return Play();
 }

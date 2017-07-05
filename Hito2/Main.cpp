@@ -65,7 +65,6 @@ int main() {
 		else
 			cout << "jugada incorrecta" << endl;
 	}
-
 	cin.get();
 	return 0;
 }

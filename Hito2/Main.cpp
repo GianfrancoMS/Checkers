@@ -5,8 +5,8 @@
 int main() {
 	Board board = Board();
 
-	Player playerWHITE = Player(PlayerColor::PLAYER_WHITE);
-	Player playerRED = Player(PlayerColor::PLAYER_RED);
+	Player playerWHITE = Player(ColorPlayer::PLAYER_WHITE);
+	Player playerRED = Player(ColorPlayer::PLAYER_RED);
 
 	Draught draught;
 	int x = 0; 

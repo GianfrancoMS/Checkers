@@ -17,7 +17,7 @@ void Board::fillDraughts()
 			draught.point.x = x;
 			draught.point.y = j;
 			draught.type = DraughtType::NORMAL;
-			draught.color = PlayerColor::PLAYER_WHITE;
+			draught.color = ColorPlayer::PLAYER_WHITE;
 			whiteDraughts.insert(draught);
 		}
 	}
@@ -28,7 +28,7 @@ void Board::fillDraughts()
 			draught.point.x = x;
 			draught.point.y = j;
 			draught.type = DraughtType::NORMAL;
-			draught.color = PlayerColor::PLAYER_RED;
+			draught.color = ColorPlayer::PLAYER_RED;
 			redDraughts.insert(draught);
 		}
 	}
@@ -84,7 +84,7 @@ void Board::printBoard() {
 set<Draught> Board::possibleMoves(Player player)
 {
 	set<Draught>possibleMoves;
-	if (player.color == PlayerColor::PLAYER_WHITE) {
+	if (player.color == ColorPlayer::PLAYER_WHITE) {
 		for (auto draught : whiteDraughts) {
 			if (move(draught, Move::DIAGONAL_DOWN_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_DOWN_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
 				possibleMoves.insert(draught);
@@ -118,7 +118,7 @@ set<Draught> Board::possibleMoves(Player player)
 int Board::possibleMoves(Player player, MoveStatus status)
 {
 	int moves = 0;
-	if (player.color == PlayerColor::PLAYER_WHITE) {
+	if (player.color == ColorPlayer::PLAYER_WHITE) {
 		for (auto draught : whiteDraughts) {
 			if (move(draught, Move::DIAGONAL_DOWN_LEFT) == status)
 				++moves;
@@ -153,20 +153,20 @@ int Board::possibleMoves(Player player, MoveStatus status)
 	return moves;
 }
 
-Draught Board::getDraught(PlayerColor color, int x, int y)
+Draught Board::getDraught(ColorPlayer color, int x, int y)
 {
 	Draught draught;
 	draught.point.x = x;
 	draught.point.y = y;
-	return  (color == PlayerColor::PLAYER_RED) ? 
+	return  (color == ColorPlayer::PLAYER_RED) ? 
 		*redDraughts.find(draught) : *whiteDraughts.find(draught);
 }
 
 bool Board::isSameColor(int x, int y, Draught draught)
 {
-	if (board[x][y] == RED && draught.color == PlayerColor::PLAYER_RED)
+	if (board[x][y] == RED && draught.color == ColorPlayer::PLAYER_RED)
 		return true;
-	else if (board[x][y] == WHITE && draught.color == PlayerColor::PLAYER_WHITE)
+	else if (board[x][y] == WHITE && draught.color == ColorPlayer::PLAYER_WHITE)
 		return true;
 	else
 		return false;
@@ -210,7 +210,7 @@ bool Board::isInLimits(Draught draught, Move move)
 
 void Board::updateBoard(int x, int y, Player player)
 {
-	player.color == PlayerColor::PLAYER_WHITE ? board[x][y] = WHITE : board[x][y] = RED;
+	player.color == ColorPlayer::PLAYER_WHITE ? board[x][y] = WHITE : board[x][y] = RED;
 }
 
 void Board::updateBoard(int x, int y, int color)
@@ -218,24 +218,24 @@ void Board::updateBoard(int x, int y, int color)
 	board[x][y] = color;
 }
 
-void Board::updateToQueen(PlayerColor color, Draught draught) {
+void Board::updateToQueen(ColorPlayer color, Draught draught) {
 	Draught queen = draught;
 	queen.type = DraughtType::QUEEN;
 	redDraughts.erase(draught);
-	color == PlayerColor::PLAYER_RED ? redDraughts.insert(queen) : whiteDraughts.insert(queen);
+	color == ColorPlayer::PLAYER_RED ? redDraughts.insert(queen) : whiteDraughts.insert(queen);
 }
 
-void Board::removeDraught(PlayerColor color, Draught draught) {
-	color == PlayerColor::PLAYER_WHITE ? whiteDraughts.erase(draught) : redDraughts.erase(draught);
+void Board::removeDraught(ColorPlayer color, Draught draught) {
+	color == ColorPlayer::PLAYER_WHITE ? whiteDraughts.erase(draught) : redDraughts.erase(draught);
 	updateBoard(draught.point.x, draught.point.y, EMPTY);
 }
 
-void Board::updatePosition(PlayerColor color, Draught draught, int newX, int newY){
+void Board::updatePosition(ColorPlayer color, Draught draught, int newX, int newY){
 	Draught newDraught = draught;
 	newDraught.point.x = newX;
 	newDraught.point.y = newY;
 	removeDraught(color, draught);
-	if (color == PlayerColor::PLAYER_RED){
+	if (color == ColorPlayer::PLAYER_RED){
 		redDraughts.insert(newDraught);
 		updateBoard(newX, newY, RED);
 		if (newDraught.point.x == 0)
@@ -336,7 +336,7 @@ MoveStatus Board::move(Player player, Draught draught, Move move) {
 	int draughtY = draught.point.y;
 
 	MoveStatus draughtMove = this->move(draught, move);
-	PlayerColor enemyColor = (player.color == PlayerColor::PLAYER_RED) ? PlayerColor::PLAYER_WHITE : PlayerColor::PLAYER_RED;
+	ColorPlayer enemyColor = (player.color == ColorPlayer::PLAYER_RED) ? ColorPlayer::PLAYER_WHITE : ColorPlayer::PLAYER_RED;
 
 	if (draughtMove == MoveStatus::MOVE_IMPOSSIBLE)
 		return MoveStatus::MOVE_IMPOSSIBLE;

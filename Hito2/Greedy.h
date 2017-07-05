@@ -1,5 +1,9 @@
 #pragma once
 #include "MoveAlgorithm.h"
+#include <vector>
+
+struct Play;
+struct Draught;
 
 class Greedy: public MoveAlgorithm
 {
@@ -8,6 +12,7 @@ public:
 	~Greedy()=default;
 	Play moveDraught(Board board, Player player);
 private:
-	Play recursiveMoveDraught(Board board, Player player);
+	void recursiveMoveDraught(Board board, Player player,vector<Play>&plays);
+	void recursiveMoveDraught(Board board, Player player, Draught draught, Play&play);
 };
 

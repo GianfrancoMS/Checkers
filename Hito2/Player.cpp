@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(PlayerColor color)
+Player::Player(ColorPlayer color)
 {
 	this->color = color;
 }

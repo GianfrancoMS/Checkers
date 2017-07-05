@@ -14,6 +14,6 @@ enum class DraughtType {
 	NORMAL, QUEEN
 };
 
-enum class PlayerColor {
+enum class ColorPlayer {
 	PLAYER_WHITE, PLAYER_RED
 };

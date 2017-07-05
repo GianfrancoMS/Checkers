@@ -6,8 +6,8 @@ using namespace std;
 class Player
 {
 public:
-	Player(PlayerColor color);
+	Player(ColorPlayer color);
 	~Player()=default;
-	PlayerColor color;
+	ColorPlayer color;
 };
 

@@ -1,29 +1,10 @@
 #pragma once
-#include <tuple>
 
 struct Play;
 class Board;
 class Player;
 
 using namespace std;
-
-template<typename ...Types> 
-struct Heuristic {
-
-	tuple<Types...> variables;
-
-	bool operator > (const Heuristic& heuristic) const {
-		return tie(variables) > tie(heuristic.variables);
-	}
-
-	bool operator == (const Heuristic& heuristic) const {
-		return tie(variables) = tie(heuristic.variables);
-	}
-
-	bool operator < (const Heuristic& heuristic) const {
-		return tie(variables) < tie(heuristic.variables);
-	}
-};
 
 class MoveAlgorithm
 {

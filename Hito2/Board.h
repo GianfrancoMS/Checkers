@@ -26,7 +26,7 @@ struct Draught
 {
 	Point point;
 	DraughtType type;
-	PlayerColor color;
+	ColorPlayer color;
 
 	bool operator == (const Draught& draught) const {
 		return this->point == draught.point;
@@ -37,9 +37,41 @@ struct Draught
 	}
 };
 
+template<typename ...Types>
+struct Heuristic {
+
+	tuple<Types...> variables;
+
+	bool operator > (const Heuristic& heuristic) const {
+		return tie(variables) > tie(heuristic.variables);
+	}
+
+	bool operator == (const Heuristic& heuristic) const {
+		return tie(variables) == tie(heuristic.variables);
+	}
+
+	bool operator < (const Heuristic& heuristic) const {
+		return tie(variables) < tie(heuristic.variables);
+	}
+};
+
 struct Play {
 	Draught draught;
-	queue<Move> move;
+	queue<Move> moves;
+	Heuristic<int, int>heuristic;
+
+	bool operator > (const Play& play) const {
+		return heuristic > play.heuristic;
+	}
+
+	bool operator == (const Play& play) const {
+		return heuristic == play.heuristic;
+	}
+
+	bool operator < (const Play& play) const {
+		return heuristic < play.heuristic;
+	}
+
 };
 
 class Board
@@ -64,7 +96,7 @@ public:
 
 	int possibleMoves(Player player, MoveStatus status);
 
-	Draught getDraught(PlayerColor color, int x ,int y);
+	Draught getDraught(ColorPlayer color, int x ,int y);
 
 	MoveStatus move(Player player, Draught draught, Move move);
 
@@ -82,9 +114,9 @@ private:
 	bool isSameColor(int x, int y, Draught draught);
 	bool isInLimits(int x, int y);
 
-	void removeDraught(PlayerColor color, Draught draught);
-	void updateToQueen(PlayerColor color, Draught draught);
-	void updatePosition(PlayerColor color, Draught draught, int newX, int newY);
+	void removeDraught(ColorPlayer color, Draught draught);
+	void updateToQueen(ColorPlayer color, Draught draught);
+	void updatePosition(ColorPlayer color, Draught draught, int newX, int newY);
 
 	void fillDraughts();
 	void fillBoard();

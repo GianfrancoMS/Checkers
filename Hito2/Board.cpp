@@ -117,6 +117,15 @@ set<Draught> Board::possibleMoves(Player player)
 	return possibleMoves;
 }
 
+Draught Board::getDraught(Player player, int x, int y)
+{
+	Draught draught;
+	draught.point.x = x;
+	draught.point.y = y;
+	return  (player.color == PlayerColor::PLAYER_RED) ? 
+		*redDraughts.find(draught) : *whiteDraughts.find(draught);
+}
+
 bool Board::isSameColor(int x, int y, Draught draught)
 {
 	if (board[x][y] == RED && draught.color == PlayerColor::PLAYER_RED)
@@ -139,26 +148,26 @@ bool Board::isInLimits(Draught draught, Move move)
 	int draughtX = draught.point.x;
 	int draughtY = draught.point.y;
 	switch (move) {
-		case Move::DIAGONAL_TOP_LEFT: {
-			int x = draughtX - 1;
-			int y = draughtY - 1;
-			return isInLimits(x, y);
-		}
-		case Move::DIAGONAL_TOP_RIGHT: {
-			int x = draughtX - 1;
-			int y = draughtY + 1;
-			return isInLimits(x, y);
-		}
-		case Move::DIAGONAL_DOWN_LEFT: {
-			int x = draughtX + 1;
-			int y = draughtY - 1;
-			return isInLimits(x, y);
-		}
-		case Move::DIAGONAL_DOWN_RIGHT: {
-			int x = draughtX + 1;
-			int y = draughtY + 1;
-			return isInLimits(x, y);
-		}
+	case Move::DIAGONAL_TOP_LEFT: {
+		int x = draughtX - 1;
+		int y = draughtY - 1;
+		return isInLimits(x, y);
+	}
+	case Move::DIAGONAL_TOP_RIGHT: {
+		int x = draughtX - 1;
+		int y = draughtY + 1;
+		return isInLimits(x, y);
+	}
+	case Move::DIAGONAL_DOWN_LEFT: {
+		int x = draughtX + 1;
+		int y = draughtY - 1;
+		return isInLimits(x, y);
+	}
+	case Move::DIAGONAL_DOWN_RIGHT: {
+		int x = draughtX + 1;
+		int y = draughtY + 1;
+		return isInLimits(x, y);
+	}
 	}
 	return false;
 }
@@ -171,6 +180,49 @@ void Board::updateBoard(int x, int y, Player player)
 void Board::updateBoard(int x, int y, int color)
 {
 	board[x][y] = color;
+}
+
+void Board::removeDraught(Player player, Draught draught) {
+	if (player.color == PlayerColor::PLAYER_WHITE)
+		whiteDraughts.erase(draught);
+	else
+		redDraughts.erase(draught);
+	updateBoard(draught.point.x, draught.point.y, EMPTY);
+}
+
+void Board::updateToQueen(Player player, Draught draught) {
+	if (player.color == PlayerColor::PLAYER_RED)
+	{
+		auto queen = *redDraughts.find(draught);
+		queen.type = DraughtType::QUEEN;
+		redDraughts.erase(draught);
+		redDraughts.insert(queen);
+	}
+	else {
+		auto queen = *whiteDraughts.find(draught);
+		queen.type = DraughtType::QUEEN;
+		whiteDraughts.erase(draught);
+		whiteDraughts.insert(queen);
+	}
+}
+
+void Board::updatePosition(Player player, Draught draught, int newX, int newY)
+{
+	auto newDraught = draught;
+	newDraught.point.x = newX;
+	newDraught.point.y = newY;
+	removeDraught(player, draught);
+	redDraughts.insert(newDraught);
+	if (player.color == PlayerColor::PLAYER_RED){
+		updateBoard(newX, newY, RED);
+		if (newDraught.point.x == 0)
+			updateToQueen(player, newDraught);
+	}
+	else {
+		updateBoard(newX, newY, WHITE);
+		if (newDraught.point.x == 7)
+			updateToQueen(player, newDraught);
+	}
 }
 
 MoveStatus Board::move(Draught draught, Move move)
@@ -255,57 +307,83 @@ MoveStatus Board::move(Draught draught, Move move)
 	return MoveStatus::MOVE_IMPOSSIBLE;
 }
 
-void Board::removeDraught(Player player, Draught draught) {
-	if (player.color == PlayerColor::PLAYER_WHITE)
-		whiteDraughts.erase(draught);
-	else
-		redDraughts.erase(draught);
-	updateBoard(draught.point.x, draught.point.y, EMPTY);
-}
-
-void Board::updateToQueen(Player player, Draught draught) {
-	if (player.color == PlayerColor::PLAYER_RED)
-	{
-		auto queen = *redDraughts.find(draught);
-		queen.type = DraughtType::QUEEN;
-		redDraughts.erase(draught);
-		redDraughts.insert(queen);
-	} 
-	else {
-		auto queen = *whiteDraughts.find(draught);
-		queen.type = DraughtType::QUEEN;
-		whiteDraughts.erase(draught);
-		whiteDraughts.insert(queen);
+MoveStatus Board::move(Player player, Draught draught, Move move) {
+	int draughtX = draught.point.x;
+	int draughtY = draught.point.y;
+	MoveStatus draughtMove = this->move(draught, move);
+	if (draughtMove == MoveStatus::MOVE_IMPOSSIBLE)
+		return MoveStatus::MOVE_IMPOSSIBLE;
+	else{
+		switch (move) {
+			case Move::DIAGONAL_TOP_LEFT: {
+				int newX = draughtX - 1;
+				int newY = draughtY - 1;
+				if (draughtMove == MoveStatus::MOVE_BLANK) {
+					updatePosition(player, draught, newX, newY);
+					return MoveStatus::MOVE_BLANK;
+				}
+				else {
+					int tempX = newX - 1;
+					int tempY = newY - 1;
+					Draught draught = getDraught(player, tempX, tempY);
+					removeDraught(player, draught);
+					updatePosition(player, draught, tempX, tempY);
+					return MoveStatus::MOVE_ENEMY;
+				}
+				break;
+			}
+			case Move::DIAGONAL_TOP_RIGHT: {
+				int newX = draughtX - 1;
+				int newY = draughtY + 1;
+				if (draughtMove == MoveStatus::MOVE_BLANK) {
+					updatePosition(player, draught, newX, newY);
+					return MoveStatus::MOVE_BLANK;
+				}
+				else {
+					int tempX = newX - 1;
+					int tempY = newY + 1;
+					Draught draught = getDraught(player, tempX, tempY);
+					removeDraught(player, draught);
+					updatePosition(player, draught, tempX, tempY);
+					return MoveStatus::MOVE_ENEMY;
+				}
+				break;
+			}
+			case Move::DIAGONAL_DOWN_LEFT: {
+				int newX = draughtX + 1;
+				int newY = draughtY - 1;
+				if (draughtMove == MoveStatus::MOVE_BLANK) {
+					updatePosition(player, draught, newX, newY);
+					return MoveStatus::MOVE_BLANK;
+				}
+				else {
+					int tempX = newX + 1;
+					int tempY = newY - 1;
+					Draught draught = getDraught(player, tempX, tempY);
+					removeDraught(player, draught);
+					updatePosition(player, draught, tempX, tempY);
+					return MoveStatus::MOVE_ENEMY;
+				}
+				break;
+			}
+			case Move::DIAGONAL_DOWN_RIGHT: {
+				int newX = draughtX + 1;
+				int newY = draughtY + 1;
+				if (draughtMove == MoveStatus::MOVE_BLANK) {
+					updatePosition(player, draught, newX, newY);
+					return MoveStatus::MOVE_BLANK;
+				}
+				else {
+					int tempX = newX + 1;
+					int tempY = newY + 1;
+					Draught draught = getDraught(player, tempX, tempY);
+					removeDraught(player, draught);
+					updatePosition(player, draught, tempX, tempY);
+					return MoveStatus::MOVE_ENEMY;
+				}
+				break;
+			}
+		}
+		return MoveStatus::MOVE_IMPOSSIBLE;
 	}
 }
-
-void Board::updatePosition(Player player, Draught draught, int newX, int newY)
-{
-	if (player.color == PlayerColor::PLAYER_RED)
-	{
-		auto newDraught = *redDraughts.find(draught);
-		newDraught.point.x = newX;
-		newDraught.point.y = newY;
-		removeDraught(player, draught);
-		redDraughts.insert(newDraught);
-		updateBoard(newX, newY, RED);
-		if (newDraught.point.x == 0)
-			updateToQueen(player, newDraught);
-	}
-	else {
-		auto newDraught = *whiteDraughts.find(draught);
-		newDraught.point.x = newX;
-		newDraught.point.y = newY;
-		removeDraught(player, draught);
-		whiteDraughts.insert(newDraught);
-		updateBoard(newX, newY, WHITE);
-		if (newDraught.point.x == 7)
-			updateToQueen(player, newDraught);
-	}
-}
-
-MoveStatus Board::move(Player player, Draught draught, Move move)
-{
-	return MoveStatus();
-}
-

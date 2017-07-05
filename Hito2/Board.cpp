@@ -180,11 +180,6 @@ void Board::updateBoard(int x, int y, int color)
 	board[x][y] = color;
 }
 
-void Board::removeDraught(Player player, Draught draught) {
-	player.color == PlayerColor::PLAYER_WHITE ? whiteDraughts.erase(draught) : redDraughts.erase(draught);
-	updateBoard(draught.point.x, draught.point.y, EMPTY);
-}
-
 void Board::updateToQueen(Player player, Draught draught) {
 	Draught queen = draught;
 	queen.type = DraughtType::QUEEN;
@@ -192,18 +187,24 @@ void Board::updateToQueen(Player player, Draught draught) {
 	player.color == PlayerColor::PLAYER_RED ? redDraughts.insert(queen) : whiteDraughts.insert(queen);
 }
 
+void Board::removeDraught(Player player, Draught draught) {
+	player.color == PlayerColor::PLAYER_WHITE ? whiteDraughts.erase(draught) : redDraughts.erase(draught);
+	updateBoard(draught.point.x, draught.point.y, EMPTY);
+}
+
 void Board::updatePosition(Player player, Draught draught, int newX, int newY){
 	Draught newDraught = draught;
 	newDraught.point.x = newX;
 	newDraught.point.y = newY;
 	removeDraught(player, draught);
-	redDraughts.insert(newDraught);
 	if (player.color == PlayerColor::PLAYER_RED){
+		redDraughts.insert(newDraught);
 		updateBoard(newX, newY, RED);
 		if (newDraught.point.x == 0)
 			updateToQueen(player, newDraught);
 	}
 	else {
+		whiteDraughts.insert(newDraught);
 		updateBoard(newX, newY, WHITE);
 		if (newDraught.point.x == 7)
 			updateToQueen(player, newDraught);
@@ -310,7 +311,7 @@ MoveStatus Board::move(Player player, Draught draught, Move move) {
 				else {
 					int tempX = newX - 1;
 					int tempY = newY - 1;
-					Draught draught = getDraught(player, tempX, tempY);
+					Draught updateDraught = getDraught(player, tempX, tempY);
 					removeDraught(player, draught);
 					updatePosition(player, draught, tempX, tempY);
 					return MoveStatus::MOVE_ENEMY;

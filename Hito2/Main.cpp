@@ -53,6 +53,14 @@ int main() {
 			cout << "White draughts: " << endl;
 			for (auto draught : board.whiteDraughts)
 				cout << draught.point.x << " " << draught.point.y << endl;
+			cout << "White" << endl;
+			cout << "Kills: " << board.possibleMoves(playerWHITE, MoveStatus::MOVE_ENEMY) << endl;
+			cout << "Empty: " << board.possibleMoves(playerWHITE, MoveStatus::MOVE_BLANK) << endl;
+			cout << "Impossible: " << board.possibleMoves(playerWHITE, MoveStatus::MOVE_IMPOSSIBLE) << endl;
+			cout << "Red" << endl;
+			cout << "Kills: " << board.possibleMoves(playerRED, MoveStatus::MOVE_ENEMY) << endl;
+			cout << "Empty: " << board.possibleMoves(playerRED, MoveStatus::MOVE_BLANK) << endl;
+			cout << "Impossible: " << board.possibleMoves(playerRED, MoveStatus::MOVE_IMPOSSIBLE) << endl;
 		}
 		else
 			cout << "jugada incorrecta" << endl;

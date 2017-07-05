@@ -2,6 +2,7 @@
 #include <vector>
 #include <tuple>
 #include <set>
+#include <queue>
 #include "Utils.h"
 
 using namespace std;
@@ -38,7 +39,7 @@ struct Draught
 
 struct Play {
 	Draught draught;
-	Move move;
+	queue<Move> move;
 };
 
 class Board

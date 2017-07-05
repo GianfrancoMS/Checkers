@@ -37,28 +37,27 @@ struct Draught
 	}
 };
 
-template<typename ...Types>
 struct Heuristic {
 
-	tuple<Types...> variables;
+	int variable;
 
 	bool operator > (const Heuristic& heuristic) const {
-		return tie(variables) > tie(heuristic.variables);
+		return tie(variable) > tie(heuristic.variable);
 	}
 
 	bool operator == (const Heuristic& heuristic) const {
-		return tie(variables) == tie(heuristic.variables);
+		return tie(variable) == tie(heuristic.variable);
 	}
 
 	bool operator < (const Heuristic& heuristic) const {
-		return tie(variables) < tie(heuristic.variables);
+		return tie(variable) < tie(heuristic.variable);
 	}
 };
 
 struct Play {
 	Draught draught;
 	queue<Move> moves;
-	Heuristic<int, int>heuristic;
+	Heuristic heuristic;
 
 	bool operator > (const Play& play) const {
 		return heuristic > play.heuristic;
@@ -71,7 +70,6 @@ struct Play {
 	bool operator < (const Play& play) const {
 		return heuristic < play.heuristic;
 	}
-
 };
 
 class Board
@@ -92,8 +90,7 @@ public:
 
 	void printBoard();
 
-	set<Draught,greater<Draught>() > possibleMovesWhite(const Player& player);
-	set<Draught, less<Draught>() > possibleMovesRed(const Player& player);
+	set<Draught> possibleMoves(const Player& player);
 
 	int possibleMoves(const Player& player, MoveStatus status);
 

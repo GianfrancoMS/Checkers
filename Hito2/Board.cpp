@@ -81,7 +81,7 @@ void Board::printBoard() {
 	}
 }
 
-set<Draught> Board::possibleMovesWhite(const Player& player)
+set<Draught> Board::possibleMoves(const Player& player)
 {
 	set<Draught>possibleMoves;
 	if (player.color == ColorPlayer::PLAYER_WHITE) {

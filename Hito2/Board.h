@@ -4,10 +4,9 @@
 #include <set>
 #include <queue>
 #include "Utils.h"
+#include "Player.h"
 
 using namespace std;
-
-class Player;
 
 struct Point
 {
@@ -92,13 +91,13 @@ public:
 
 	void printBoard();
 
-	set<Draught> possibleMoves(Player player);
+	set<Draught> possibleMoves(const Player& player);
 
-	int possibleMoves(Player player, MoveStatus status);
+	int possibleMoves(const Player& player, MoveStatus status);
 
 	Draught getDraught(ColorPlayer color, int x ,int y);
 
-	MoveStatus move(Player player, Draught draught, Move move);
+	MoveStatus move(const Player& player, Draught draught, Move move);
 
 	set<Draught> whiteDraughts;
 	set<Draught> redDraughts;
@@ -108,7 +107,7 @@ private:
 	static const char NORMAL_PIECE = '@';
 	static const char QUEEN_PIECE = '#';
 
-	void updateBoard(int x, int y, Player player);
+	void updateBoard(int x, int y, const Player& player);
 	void updateBoard(int x, int y, int color);
 
 	bool isSameColor(int x, int y, Draught draught);

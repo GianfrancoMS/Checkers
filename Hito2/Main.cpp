@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Board.h"
 #include "Player.h"
+#include "Greedy.h"
 
 int main() {
 	Board board = Board();
@@ -8,63 +9,32 @@ int main() {
 	Player playerWHITE = Player(ColorPlayer::PLAYER_WHITE);
 	Player playerRED = Player(ColorPlayer::PLAYER_RED);
 
-	Draught draught;
-	int x = 0; 
-	int y = 0;
-	int aux = 0;
-	Move move;
-
-	draught = board.getDraught(playerWHITE.color, 2 ,6);
-	board.move(playerWHITE, draught, Move::DIAGONAL_DOWN_LEFT);
-
-	draught = board.getDraught(playerWHITE.color, 3, 5);
-	board.move(playerWHITE, draught, Move::DIAGONAL_DOWN_RIGHT);
-
-	board.printBoard();
+	Greedy greedy = Greedy();
 
 	while (true)
 	{
-		auto possiblePlaysWhite = board.possibleMoves(playerWHITE);
-		auto possiblePlaysRed = board.possibleMoves(playerRED);
+		board.printBoard();
 
-		cout << "White moves: " << endl;
-		for (auto draught : possiblePlaysWhite)
-			cout << draught.point.x << " " << draught.point.y << endl;
+		auto plays = greedy.moveDraught(board, playerRED);
 
-		cout << "Red moves: " << endl;
-		for (auto draught : possiblePlaysRed)
-			cout << draught.point.x << " " << draught.point.y << endl;
-
-		cout << "X:"; 
-		cin >> x; 
-		cout << "Y:"; 
-		cin >> y; 
-		cout << "Izquierda [1], Derecha[2] :"; 
-		cin >> aux; 
-		cout << endl;
-		if (aux == 1)
-			move = Move::DIAGONAL_TOP_LEFT;
-		else
-			move = Move::DIAGONAL_TOP_RIGHT;
-		draught = board.getDraught(playerRED.color,x,y);
-		if (board.move(playerRED, draught, move) != MoveStatus::MOVE_IMPOSSIBLE)
-		{
-			board.printBoard();
-			cout << "White draughts: " << endl;
-			for (auto draught : board.whiteDraughts)
-				cout << draught.point.x << " " << draught.point.y << endl;
-			cout << "White" << endl;
-			cout << "Kills: " << board.possibleMoves(playerWHITE, MoveStatus::MOVE_ENEMY) << endl;
-			cout << "Empty: " << board.possibleMoves(playerWHITE, MoveStatus::MOVE_BLANK) << endl;
-			cout << "Impossible: " << board.possibleMoves(playerWHITE, MoveStatus::MOVE_IMPOSSIBLE) << endl;
-			cout << "Red" << endl;
-			cout << "Kills: " << board.possibleMoves(playerRED, MoveStatus::MOVE_ENEMY) << endl;
-			cout << "Empty: " << board.possibleMoves(playerRED, MoveStatus::MOVE_BLANK) << endl;
-			cout << "Impossible: " << board.possibleMoves(playerRED, MoveStatus::MOVE_IMPOSSIBLE) << endl;
+		if (plays.moves.empty()) {
+			cout << "Sorry. I can't move any longer" << endl;
+			break;
 		}
-		else
-			cout << "jugada incorrecta" << endl;
+		else {
+			while (!plays.moves.empty()) {
+				auto play = plays.moves.front();
+				plays.moves.pop();
+				board.move(playerRED, plays.draught, play);
+				cin.get();
+				cin.get();
+			}
+			cout << "Kills: " << board.possibleMoves(playerRED, MoveStatus::MOVE_ENEMY) << endl;
+			cout << "Heuristic 1: " << get<0>(plays.heuristic.variables) << endl;
+			cout << "Heuristic 2: " << get<1>(plays.heuristic.variables) << endl;
+		}
 	}
+	cin.get();
 	cin.get();
 	return 0;
 }

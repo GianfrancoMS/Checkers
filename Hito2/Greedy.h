@@ -10,9 +10,9 @@ class Greedy: public MoveAlgorithm
 public:
 	Greedy()=default;
 	~Greedy()=default;
-	Play moveDraught(Board board, Player player);
+	Play moveDraught(Board board, const Player& player);
 private:
-	void recursiveMoveDraught(Board board, Player player,vector<Play>&plays);
-	void recursiveMoveDraught(Board board, Player player, Draught draught, Play&play);
+	void recursiveMoveDraught(Board board, const Player& player,vector<Play>&plays);
+	void recursiveMoveDraught(Board& board, const Player& player, Draught&draught, Play&play);
 };
 

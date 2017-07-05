@@ -1,6 +1,5 @@
 #include "Board.h"
 #include "rlutil.h"
-#include "Player.h"
 
 Board::Board()
 {
@@ -81,7 +80,7 @@ void Board::printBoard() {
 	}
 }
 
-set<Draught> Board::possibleMoves(Player player)
+set<Draught> Board::possibleMoves(const Player& player)
 {
 	set<Draught>possibleMoves;
 	if (player.color == ColorPlayer::PLAYER_WHITE) {
@@ -109,13 +108,13 @@ set<Draught> Board::possibleMoves(Player player)
 				if (move(draught, Move::DIAGONAL_DOWN_LEFT) != MoveStatus::MOVE_IMPOSSIBLE || move(draught, Move::DIAGONAL_DOWN_RIGHT) != MoveStatus::MOVE_IMPOSSIBLE) {
 					possibleMoves.insert(draught);
 					continue;
-				}
+			}
 		}
 	}
 	return possibleMoves;
 }
 
-int Board::possibleMoves(Player player, MoveStatus status)
+int Board::possibleMoves(const Player& player, MoveStatus status)
 {
 	int moves = 0;
 	if (player.color == ColorPlayer::PLAYER_WHITE) {
@@ -208,7 +207,7 @@ bool Board::isInLimits(Draught draught, Move move)
 	return false;
 }
 
-void Board::updateBoard(int x, int y, Player player)
+void Board::updateBoard(int x, int y, const Player& player)
 {
 	player.color == ColorPlayer::PLAYER_WHITE ? board[x][y] = WHITE : board[x][y] = RED;
 }
@@ -331,7 +330,7 @@ MoveStatus Board::move(Draught draught, Move move)
 	return MoveStatus::MOVE_IMPOSSIBLE;
 }
 
-MoveStatus Board::move(Player player, Draught draught, Move move) {
+MoveStatus Board::move(const Player& player, Draught draught, Move move) {
 	int draughtX = draught.point.x;
 	int draughtY = draught.point.y;
 

@@ -183,10 +183,7 @@ void Board::updateBoard(int x, int y, int color)
 }
 
 void Board::removeDraught(Player player, Draught draught) {
-	if (player.color == PlayerColor::PLAYER_WHITE)
-		whiteDraughts.erase(draught);
-	else
-		redDraughts.erase(draught);
+	player.color == PlayerColor::PLAYER_WHITE ? whiteDraughts.erase(draught) : redDraughts.erase(draught);
 	updateBoard(draught.point.x, draught.point.y, EMPTY);
 }
 

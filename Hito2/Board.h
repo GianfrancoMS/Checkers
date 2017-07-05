@@ -61,6 +61,8 @@ public:
 
 	set<Draught> possibleMoves(Player player);
 
+	int possibleMoves(Player player, MoveStatus status);
+
 	Draught getDraught(PlayerColor color, int x ,int y);
 
 	MoveStatus move(Player player, Draught draught, Move move);

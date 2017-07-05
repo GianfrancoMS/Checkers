@@ -115,6 +115,44 @@ set<Draught> Board::possibleMoves(Player player)
 	return possibleMoves;
 }
 
+int Board::possibleMoves(Player player, MoveStatus status)
+{
+	int moves = 0;
+	if (player.color == PlayerColor::PLAYER_WHITE) {
+		for (auto draught : whiteDraughts) {
+			if (move(draught, Move::DIAGONAL_DOWN_LEFT) == status)
+				++moves;
+
+			if (move(draught, Move::DIAGONAL_DOWN_RIGHT) == status)
+				++moves;
+
+			if (draught.type == DraughtType::QUEEN) {
+				if (move(draught, Move::DIAGONAL_TOP_LEFT) == status)
+					++moves;
+				if (move(draught, Move::DIAGONAL_TOP_RIGHT) == status)
+					++moves;
+			}
+		}
+	}
+	else {
+		for (auto draught : redDraughts) {
+			if (move(draught, Move::DIAGONAL_TOP_LEFT) == status)
+				++moves;
+
+			if (move(draught, Move::DIAGONAL_TOP_RIGHT) == status)
+				++moves;
+
+			if (draught.type == DraughtType::QUEEN) {
+				if (move(draught, Move::DIAGONAL_DOWN_LEFT) == status)
+					++moves;
+				if (move(draught, Move::DIAGONAL_DOWN_RIGHT) == status)
+					++moves;
+			}
+		}
+	}
+	return moves;
+}
+
 Draught Board::getDraught(PlayerColor color, int x, int y)
 {
 	Draught draught;

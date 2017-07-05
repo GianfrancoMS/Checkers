@@ -56,7 +56,7 @@ public:
 
 	set<Draught> possibleMoves(Player player);
 
-	Draught getDraught(Player player, int x ,int y);
+	Draught getDraught(PlayerColor color, int x ,int y);
 
 	MoveStatus move(Player player, Draught draught, Move move);
 
@@ -73,9 +73,9 @@ private:
 	bool isSameColor(int x, int y, Draught draught);
 	bool isInLimits(int x, int y);
 
-	void removeDraught(Player player, Draught draught);
-	void updateToQueen(Player player, Draught draught);
-	void updatePosition(Player player, Draught draught, int newX, int newY);
+	void removeDraught(PlayerColor color, Draught draught);
+	void updateToQueen(PlayerColor color, Draught draught);
+	void updatePosition(PlayerColor color, Draught draught, int newX, int newY);
 
 	void fillDraughts();
 	void fillBoard();
